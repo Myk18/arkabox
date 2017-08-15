@@ -1,0 +1,8 @@
+input {
+max-width: 30 px;
+color: green;
+}
+#bullet {
+//	content: url('/arkabox/img/black-dot.jpg');
+	content: url('/arkabox/img/cat1.jpg');
+}
