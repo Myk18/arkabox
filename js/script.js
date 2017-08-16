@@ -96,6 +96,13 @@ function borde(widths, heights, widthf, heightf){
 				return false;
 				}
 	}
+	this.move = function (x,y,z,w) {
+		    this.widths = x;  
+			this.heights = y;
+			this.widthf = z;  
+			this.heightf = w;
+		
+	}
 }
 function brick(ws, hs){
     this.ws = ws;  
@@ -125,45 +132,51 @@ bh.innerHTML=Math.floor(point.height);
 bs.innerHTML=point.speed;
 ba.innerHTML=point.angle;
 render(bullet,point.width,point.height);
-// borders collide start
-if (line0.line(Math.floor(point.width), Math.floor(point.height))) {
-	//alert('0');
-	if (point.angle<=180){
-		point.angle = 180-point.angle;
+
+// borders collide
+	if (line0.line(Math.floor(point.width), Math.floor(point.height))) {
+		//alert('0');
+		if (point.angle<=180){
+			point.angle = 180-point.angle;
+			angle.value = point.angle;
+			}else{
+			point.angle = 360-(point.angle-180);
+			angle.value = point.angle;
+			}
+	}
+	if (line1.line(Math.floor(point.width), Math.floor(point.height))) {
+		alert('Game Over');
+		point.angle = 360-point.angle;
+		angle.value = point.angle;	
+	}
+	if (line2.line(Math.floor(point.width), Math.floor(point.height))) {
+		//alert('2');
+		if (point.angle<=180){
+			point.angle = 180-point.angle;
+			angle.value = point.angle;
+			}else{
+			point.angle = 360-(point.angle-180);
+			angle.value = point.angle;
+			}
+	}
+	if (line3.line(Math.floor(point.width), Math.floor(point.height))) {
+		//alert('3');
+		point.angle = 360-point.angle; 
 		angle.value = point.angle;
-		}else{
-		point.angle = 360-(point.angle-180);
-		angle.value = point.angle;
-		}
-}
-if (line1.line(Math.floor(point.width), Math.floor(point.height))) {
-	//alert('1');
-	point.angle = 360-point.angle;
-	angle.value = point.angle;	
-}
-if (line2.line(Math.floor(point.width), Math.floor(point.height))) {
-	//alert('2');
-	if (point.angle<=180){
-		point.angle = 180-point.angle;
-		angle.value = point.angle;
-		}else{
-		point.angle = 360-(point.angle-180);
-		angle.value = point.angle;
-		}
-}
-if (line3.line(Math.floor(point.width), Math.floor(point.height))) {
-	//alert('3');
-	point.angle = 360-point.angle; 
-	angle.value = point.angle;
-}
-// borders collide end
-// collide
+	}
+	if (line4.line(Math.floor(point.width), Math.floor(point.height))) {     // desk
+		point.angle = 360-point.angle;
+		angle.value = point.angle;	
+	}
+	
+// bricks collide
 bricks.forEach(function(item, i, bricks){
 				if (point.incheck(window['brickobj'+[i]])){	
 						point.collide(window['brickobj'+[i]]);
 					}
 });
-// step end
+
+
 point.move(speed.value,angle.value);
 }
 function left(){
@@ -214,7 +227,7 @@ function movement(){	  // time
 	var t;
 	this.start = function start() {
 	t+=1;
-	timers[t] = setInterval(step,50);
+	timers[t] = setInterval(step,30);
 	startbut.disabled = true;
 	stopbut.disabled = false;
 	}
@@ -234,33 +247,69 @@ function movement(){	  // time
 
 // init
 
+var bbox1 = document.getElementById("bbox");
+var bscroll1 = document.getElementById("bscroll");
+var tscroll1 = document.getElementById("tscroll");
+
 // init ball
 point = new ball(5,5,1,45);
 var bull1 = document.createElement("div");
 bull1.setAttribute("id", "bullet");
-var bbox1 = document.getElementById("bbox");
 bbox1.appendChild(bull1);
 
+// init controlslider
+var slide1 = document.createElement("div");
+slide1.setAttribute("id", "slide");
+bbox1.appendChild(slide1);
+
+var pad1 = document.createElement("pad");
+pad1.setAttribute("id", "pad");
+slide1.appendChild(pad1);
+
+// init deskmove
+document.getElementById("slide").onscroll = function(){
+	//var pad2 = document.getElementById("slide");
+	tsvalue = document.getElementById("slide").scrollTop;
+	//alert (tsvalue);
+	document.getElementById("bscroll").innerHTML = Math.floor(tsvalue/2600*240);
+	
+	desk1.style.top = tsvalue/2600*240;
+	line4.move(440,210-tsvalue/2600*240,440,240-tsvalue/2600*240);
+	
+}
+
+var desk1 = document.createElement("desk");
+desk1.setAttribute("id", "desk");
+bbox1.appendChild(desk1);
+
 // init objects
-var objlist = ['acord','bcord','angle','speed','bw','bh','bs','ba','bullet','bbox'];
+var objlist = ['acord','bcord','angle','speed','bw','bh','bs','ba','bullet','bbox','desk'];
 objlist.forEach(function(item,i,objlist){
 	name = objlist[i];
 	window['name'] = document.getElementById(name);
 	if (objlist[i] == 'bullet'){
-			bullet.style.width = "10px";
-			bullet.style.height = "10px";
+			bullet.style.width = "15px";
+			bullet.style.height = "15px";
 			bullet.style.background = "yellow";
 			bullet.style.position = "absolute";
-			bullet.style.zIndex="3";
-			bullet.style.content = "/img/black-dot.jpg";			
+			bullet.style.zIndex="3";		
 	}
 	if (objlist[i] == 'bbox'){
 			bbox.style.width = "480px";
 			bbox.style.height = "240px";
-			bbox.style.background = "grey";
+			bbox.style.background = "rgba(128, 128, 128, 0)";
 			bbox.style.position = "relative";
 			bbox.style.zIndex="1";
 	}
+	if (objlist[i] == 'desk'){
+			desk1.style.width = "10px";
+			desk1.style.height = "30px";
+			desk1.style.background = "blue";
+			desk1.style.position = "absolute";
+			desk1.style.left = "440px";
+			desk1.style.zIndex="4";
+			desk1.style.border ="2px";
+	}	
 });
 
 // init borders
@@ -269,6 +318,7 @@ var lines = [
 	[480,0,480,240],  		 //  right
 	[0,240,480,240],  		 //   up
 	[0,0,0,240],     		  //   left
+	[440,240,440,210],  		 //  right desk
 ];
 lines.forEach(function(item, i, lines)  {
 window["line"+i] = new borde(lines[i][0],lines[i][1],lines[i][2],lines[i][3]);
@@ -290,25 +340,25 @@ var bricks = [
 
 ];
 bricks.forEach(function(item, i, bricks)  {
-window["brickobj"+i] = new brick(bricks[i][0],bricks[i][1]);
-name = "brickobj"+i;
-var para = document.createElement("div");
-para.setAttribute("id", name);
-var element = document.getElementById("bbox");
-element.appendChild(para);
-para = "";
-element="";
-bbrickz = document.getElementById(name);
-name = '';
-bbrickz.style.border ="2px";
-bbrickz.style.width = window["brickobj"+i].wf - window["brickobj"+i].ws;
-bbrickz.style.height = window["brickobj"+i].hf - window["brickobj"+i].hs;
-bbrickz.style.bottom = window["brickobj"+i].hs;
-bbrickz.style.left = window["brickobj"+i].ws;
-bbrickz.style.background = "brown";
-bbrickz.style.position = "absolute";
-bbrickz.style.zIndex="2";
-brickz = '';
+	window["brickobj"+i] = new brick(bricks[i][0],bricks[i][1]);
+	name = "brickobj"+i;
+	var para = document.createElement("div");
+	para.setAttribute("id", name);
+	var element = document.getElementById("bbox");
+	element.appendChild(para);
+	para = "";
+	element="";
+	bbrickz = document.getElementById(name);
+	name = '';
+	bbrickz.style.border ="2px";
+	bbrickz.style.width = window["brickobj"+i].wf - window["brickobj"+i].ws;
+	bbrickz.style.height = window["brickobj"+i].hf - window["brickobj"+i].hs;
+	bbrickz.style.bottom = window["brickobj"+i].hs;
+	bbrickz.style.left = window["brickobj"+i].ws;
+	bbrickz.style.background = "brown";
+	bbrickz.style.position = "absolute";
+	bbrickz.style.zIndex="2";
+	brickz = '';
 });
 
 // set buttons

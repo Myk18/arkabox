@@ -1,8 +1,22 @@
 input {
-max-width: 30 px;
+max-width: 45px;
 color: green;
 }
 #bullet {
 //	content: url('/arkabox/img/black-dot.jpg');
 	content: url('/arkabox/img/cat1.jpg');
+}
+#slide {
+	height: 260px;
+	width: 20px;
+	position: relative;
+	background: green;
+	left: 480px;
+	overflow: scroll;
+	position: absolute;
+}
+#pad {
+	height: 2600px;
+	width: 10px;
+	position: absolute;
 }
