@@ -1,1 +1,1 @@
-yet another arcanoid
+yet another arcanoid game
